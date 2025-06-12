@@ -4,6 +4,7 @@ using SRPM.API.Models;
 using SRPM.API.Services;
 using System.Security.Claims;
 using Task = System.Threading.Tasks.Task;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SRPM.API.Controllers
 {
@@ -20,6 +21,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "Lấy đánh giá theo ID")]
         public async Task<ActionResult<EvaluationDto>> GetById(int id)
         {
             var evaluation = await _evaluationService.GetByIdAsync(id);
@@ -37,6 +39,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("project/{projectId}")]
+        [SwaggerOperation(Summary = "Lấy đánh giá theo ID dự án")]
         public async Task<ActionResult<IEnumerable<EvaluationDto>>> GetByProjectId(int projectId)
         {
             var evaluations = await _evaluationService.GetByProjectIdAsync(projectId);
@@ -44,6 +47,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("task/{taskId}")]
+        [SwaggerOperation(Summary = "Lấy đánh giá theo ID nhiệm vụ")]
         public async Task<ActionResult<IEnumerable<EvaluationDto>>> GetByTaskId(int taskId)
         {
             var evaluations = await _evaluationService.GetByTaskIdAsync(taskId);
@@ -51,6 +55,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("evaluated-by/{userId}")]
+        [SwaggerOperation(Summary = "Lấy đánh giá theo ID người được đánh giá")]
         public async Task<ActionResult<IEnumerable<EvaluationDto>>> GetByEvaluatedById(int userId)
         {
             var evaluations = await _evaluationService.GetByEvaluatedByIdAsync(userId);
@@ -58,6 +63,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("type/{type}")]
+        [SwaggerOperation(Summary = "Lấy đánh giá theo loại")]
         public async Task<ActionResult<IEnumerable<EvaluationDto>>> GetByType(string type)
         {
             var evaluations = await _evaluationService.GetByTypeAsync(type);
@@ -77,6 +83,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [SwaggerOperation(Summary = "Cập nhật đánh giá")]
         public async Task<ActionResult> Update(int id, [FromBody] UpdateEvaluationRequest request)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -88,6 +95,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "Xóa đánh giá")]
         public async Task<ActionResult> Delete(int id)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);

@@ -1,3 +1,4 @@
+// Services/GoogleAuthService.cs 
 using Microsoft.Extensions.Configuration;
 using SRPM.API.Models;
 using System.Web;
@@ -70,6 +71,8 @@ namespace SRPM.API.Services
             }
             catch (Exception ex)
             {
+                _logger.LogInformation("Google callback received. Code: {Code}, State: {State}", code, action);
+
                 _logger.LogError(ex, "Google authentication failed");
                 return new AuthResponse 
                 { 

@@ -4,6 +4,7 @@ using SRPM.API.Models;
 using SRPM.API.Services;
 using System.Security.Claims;
 using Task = System.Threading.Tasks.Task;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SRPM.API.Controllers
 {
@@ -20,6 +21,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "Lấy thông tin chi tiết 1 đề tài nghiên cứu theo ID")]
         public async Task<ActionResult<ResearchTopicDto>> GetById(int id)
         {
             var researchTopic = await _researchTopicService.GetByIdAsync(id);
@@ -37,6 +39,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("active")]
+        [SwaggerOperation(Summary = "Lấy danh sách đề tài nghiên cứu đang hoạt động")]
         public async Task<ActionResult<IEnumerable<ResearchTopicDto>>> GetActive()
         {
             var researchTopics = await _researchTopicService.GetActiveAsync();
@@ -44,6 +47,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("created-by/{userId}")]
+        [SwaggerOperation(Summary = "Lấy danh sách đề tài nghiên cứu theo ID người tạo")]
         public async Task<ActionResult<IEnumerable<ResearchTopicDto>>> GetByCreatedById(int userId)
         {
             var researchTopics = await _researchTopicService.GetByCreatedByIdAsync(userId);
@@ -51,6 +55,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "Tạo mới đề tài nghiên cứu")]
         [Authorize(Roles = "HostInstitution,Admin")]
         public async Task<ActionResult<ResearchTopicDto>> Create([FromBody] CreateResearchTopicRequest request)
         {
@@ -63,6 +68,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [SwaggerOperation(Summary = "Cập nhật thông tin đề tài nghiên cứu")]
         [Authorize(Roles = "HostInstitution,Admin")]
         public async Task<ActionResult> Update(int id, [FromBody] UpdateResearchTopicRequest request)
         {
@@ -75,6 +81,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "Xóa đề tài nghiên cứu theo ID")]
         [Authorize(Roles = "HostInstitution,Admin")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -87,6 +94,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpPatch("{id}/toggle-active")]
+        [SwaggerOperation(Summary = "Bật/tắt trạng thái hoạt động của một đề tài")]
         [Authorize(Roles = "HostInstitution,Admin")]
         public async Task<ActionResult> ToggleActiveStatus(int id)
         {

@@ -4,6 +4,7 @@ using SRPM.API.Models;
 using SRPM.API.Services;
 using System.Security.Claims;
 using Task = System.Threading.Tasks.Task;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SRPM.API.Controllers
 {
@@ -20,6 +21,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "Lấy thông tin chi tiết nhiệm vụ theo ID")]
         public async Task<ActionResult<TaskDto>> GetById(int id)
         {
             var task = await _taskService.GetByIdAsync(id);
@@ -30,6 +32,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(Summary = "Lấy danh sách tất cả nhiệm vụ")]
         public async Task<ActionResult<IEnumerable<TaskDto>>> GetAll()
         {
             var tasks = await _taskService.GetAllAsync();
@@ -37,6 +40,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("project/{projectId}")]
+        [SwaggerOperation(Summary = "Lấy nhiệm vụ theo ID dự án")]
         public async Task<ActionResult<IEnumerable<TaskDto>>> GetByProjectId(int projectId)
         {
             var tasks = await _taskService.GetByProjectIdAsync(projectId);
@@ -44,6 +48,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("assigned/{userId}")]
+        [SwaggerOperation(Summary = "Lấy nhiệm vụ theo ID người được giao")]
         public async Task<ActionResult<IEnumerable<TaskDto>>> GetByAssignedToId(int userId)
         {
             var tasks = await _taskService.GetByAssignedToIdAsync(userId);
@@ -51,6 +56,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("status/{status}")]
+        [SwaggerOperation(Summary = "Lọc nhiệm vụ theo trạng thái")]
         public async Task<ActionResult<IEnumerable<TaskDto>>> GetByStatus(string status)
         {
             var tasks = await _taskService.GetByStatusAsync(status);
@@ -58,6 +64,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("milestones/{projectId}")]
+        [SwaggerOperation(Summary = "Lấy danh sách các mốc thời gian của dự án")]
         public async Task<ActionResult<IEnumerable<TaskDto>>> GetMilestones(int projectId)
         {
             var tasks = await _taskService.GetMilestonesAsync(projectId);
@@ -65,6 +72,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "Tạo mới nhiệm vụ")]
         public async Task<ActionResult<TaskDto>> Create([FromBody] CreateTaskRequest request)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -76,6 +84,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [SwaggerOperation(Summary = "Cập nhật thông tin nhiệm vụ")]
         public async Task<ActionResult> Update(int id, [FromBody] UpdateTaskRequest request)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -87,6 +96,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "Xóa nhiệm vụ theo ID")]
         public async Task<ActionResult> Delete(int id)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -98,6 +108,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpPatch("{id}/status")]
+        [SwaggerOperation(Summary = "Cập nhật trạng thái nhiệm vụ")]
         public async Task<ActionResult> UpdateStatus(int id, [FromBody] UpdateTaskStatusRequest request)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);

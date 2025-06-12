@@ -4,6 +4,7 @@ using SRPM.API.Models;
 using SRPM.API.Services;
 using System.Security.Claims;
 using Task = System.Threading.Tasks.Task;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SRPM.API.Controllers
 {
@@ -20,6 +21,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "Lấy yêu cầu tài trợ theo ID")]
         public async Task<ActionResult<FundingRequestDto>> GetById(int id)
         {
             var fundingRequest = await _fundingRequestService.GetByIdAsync(id);
@@ -37,6 +39,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("project/{projectId}")]
+        [SwaggerOperation(Summary = "Lấy yêu cầu tài trợ theo ID dự án")]
         public async Task<ActionResult<IEnumerable<FundingRequestDto>>> GetByProjectId(int projectId)
         {
             var fundingRequests = await _fundingRequestService.GetByProjectIdAsync(projectId);
@@ -44,6 +47,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("requested-by/{userId}")]
+        [SwaggerOperation(Summary = "Lấy yêu cầu tài trợ theo ID người yêu cầu")]
         public async Task<ActionResult<IEnumerable<FundingRequestDto>>> GetByRequestedById(int userId)
         {
             var fundingRequests = await _fundingRequestService.GetByRequestedByIdAsync(userId);
@@ -51,6 +55,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("status/{status}")]
+        [SwaggerOperation(Summary = "Lấy yêu cầu tài trợ theo trạng thái")]
         public async Task<ActionResult<IEnumerable<FundingRequestDto>>> GetByStatus(string status)
         {
             var fundingRequests = await _fundingRequestService.GetByStatusAsync(status);
@@ -69,6 +74,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [SwaggerOperation(Summary = "Cập nhật yêu cầu tài trợ")]
         public async Task<ActionResult> Update(int id, [FromBody] UpdateFundingRequestRequest request)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -80,6 +86,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "Xóa yêu cầu tài trợ")]
         public async Task<ActionResult> Delete(int id)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -91,6 +98,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpPost("{id}/approve")]
+        [SwaggerOperation(Summary = "Duyệt yêu cầu cấp kinh phí")]
         [Authorize(Roles = "Staff,Admin")]
         public async Task<ActionResult> Approve(int id, [FromBody] ApproveFundingRequestRequest request)
         {
@@ -103,6 +111,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpPost("{id}/reject")]
+        [SwaggerOperation(Summary = "Từ chối yêu cầu cấp kinh phí")]
         [Authorize(Roles = "Staff,Admin")]
         public async Task<ActionResult> Reject(int id, [FromBody] RejectFundingRequestRequest request)
         {

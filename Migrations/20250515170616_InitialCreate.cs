@@ -308,7 +308,88 @@ namespace SRPM.API.Migrations
                     { 5, "Host Institution", "HostInstitution" },
                     { 6, "Appraisal Council Member", "AppraisalCouncil" }
                 });
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "Name", "CreatedAt" },
+                values: new object[,]
+                {
+                    { 1, "admin@example.com", "Admin User", DateTime.UtcNow },
+                    { 2, "staff@example.com", "Staff User", DateTime.UtcNow },
+                    { 3, "researcher@example.com", "Researcher User", DateTime.UtcNow }
+                });
+            migrationBuilder.InsertData(
+                table: "Notifications",
+                columns: new[] { "Id", "Title", "Message", "IsRead", "UserId", "CreatedAt" },
+                values: new object[,]
+                {
+                    { 1, "Welcome", "Welcome to the system!", false, 1, DateTime.UtcNow },
+                    { 2, "New Task Assigned", "You have a new task assigned.", false, 2, DateTime.UtcNow },
+                    { 3, "Project Update", "Your project has been updated.", true, 3, DateTime.UtcNow }
+                });
+            migrationBuilder.InsertData(
+                table: "ResearchTopics",
+                columns: new[] { "Id", "Title", "Description", "CreatedAt", "CreatedById", "IsActive" },
+                values: new object[,]
+                {
+                    { 1, "AI in Healthcare", "Exploring the use of AI in improving healthcare systems.", DateTime.UtcNow, 1, true },
+                    { 2, "Climate Change Research", "Study the effects of climate change on agriculture.", DateTime.UtcNow, 2, true },
+                    { 3, "Space Exploration", "Research into the future of space exploration and technology.", DateTime.UtcNow, 3, true }
+                });
+            migrationBuilder.InsertData(
+                table: "UserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                values: new object[,]
+                {
+                    { 1, 1 }, // Admin
+                    { 2, 2 }, // Staff
+                    { 3, 3 }  // Researcher
+                });
+            migrationBuilder.InsertData(
+                table: "Projects",
+                columns: new[] { "Id", "Title", "Description", "Status", "StartDate", "CreatedAt", "OwnerId" },
+                values: new object[,]
+                {
+                    { 1, "AI in Healthcare", "Applying AI in healthcare technology.", "Active", DateTime.UtcNow, DateTime.UtcNow, 1 },
+                    { 2, "Space Research", "Research on space exploration and technologies.", "Active", DateTime.UtcNow, DateTime.UtcNow, 2 },
+                    { 3, "Sustainability Projects", "Focusing on sustainable practices in agriculture.", "Completed", DateTime.UtcNow, DateTime.UtcNow, 3 }
+                });
+            migrationBuilder.InsertData(
+                table: "FundingRequests",
+                columns: new[] { "Id", "Title", "Amount", "Status", "RequestedById", "CreatedAt", "ProjectId" },
+                values: new object[,]
+                {
+                    { 1, "AI Project Funding", 50000.00m, "Pending", 1, DateTime.UtcNow, 1 },
+                    { 2, "Space Research Funding", 100000.00m, "Approved", 2, DateTime.UtcNow, 2 },
+                    { 3, "Sustainability Project Funding", 75000.00m, "Denied", 3, DateTime.UtcNow, 3 }
+                });
+            migrationBuilder.InsertData(
+                table: "ProjectMembers",
+                columns: new[] { "ProjectId", "UserId", "Role", "JoinedAt" },
+                values: new object[,]
+                {
+                    { 1, 1, "Project Owner", DateTime.UtcNow },
+                    { 2, 2, "Researcher", DateTime.UtcNow },
+                    { 3, 3, "Contributor", DateTime.UtcNow }
+                });
+            migrationBuilder.InsertData(
+                table: "Tasks",
+                columns: new[] { "Id", "Title", "Description", "Status", "StartDate", "DueDate", "ProjectId", "AssignedToId", "IsMilestone", "CreatedAt" },
+                values: new object[,]
+                {
+                    { 1, "Task 1 for AI Project", "Complete initial AI model design.", "In Progress", DateTime.UtcNow, DateTime.UtcNow.AddDays(10), 1, 1, true, DateTime.UtcNow },
+                    { 2, "Task 2 for Space Research", "Collect data for the space project.", "Not Started", DateTime.UtcNow, DateTime.UtcNow.AddDays(15), 2, 2, false, DateTime.UtcNow },
+                    { 3, "Task 3 for Sustainability", "Research sustainable farming practices.", "Completed", DateTime.UtcNow, DateTime.UtcNow.AddDays(5), 3, 3, false, DateTime.UtcNow }
+                });
 
+            migrationBuilder.InsertData(
+                table: "Evaluations",
+                columns: new[] { "Id", "Type", "Content", "Score", "ProjectId", "EvaluatedById", "CreatedAt" },
+                values: new object[,]
+                {
+                    { 1, "Performance", "Performance review for AI project.", 85, 1, 1, DateTime.UtcNow },
+                    { 2, "Research", "Feedback on space exploration project.", 90, 2, 2, DateTime.UtcNow },
+                    { 3, "Impact", "Evaluation of sustainability project outcomes.", 78, 3, 3, DateTime.UtcNow }
+                });
             migrationBuilder.CreateIndex(
                 name: "IX_Evaluations_EvaluatedById",
                 table: "Evaluations",

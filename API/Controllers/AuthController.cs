@@ -3,6 +3,9 @@ using SRPM.API.Models;
 using SRPM.API.Services;
 using System.Web;
 using Task = System.Threading.Tasks.Task;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SRPM.API.Controllers
 {
@@ -22,6 +25,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpPost("login")]
+        [SwaggerOperation(Summary = "Đăng nhập")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
@@ -36,6 +40,7 @@ namespace SRPM.API.Controllers
 
 
         [HttpPost("register")]
+        [SwaggerOperation(Summary = "Đăng ký tài khoản mới")]
         public async Task<ActionResult<AuthResponse>> Register([FromBody] RegisterRequest request)
         {
             if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Name) || string.IsNullOrEmpty(request.Password))
@@ -48,21 +53,23 @@ namespace SRPM.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("google-login")]
-        public async Task<ActionResult<AuthResponse>> GoogleLogin([FromBody] GoogleLoginRequest request)
-        {
-            if (string.IsNullOrEmpty(request.GoogleToken))
-                return BadRequest(new AuthResponse { Success = false, Message = "Google token is required." });
+        // [HttpPost("google-login")]
+        // [SwaggerOperation(Summary = "Đăng ký tài khoản mới")]
+        // public async Task<ActionResult<AuthResponse>> GoogleLogin([FromBody] GoogleLoginRequest request)
+        // {
+        //     if (string.IsNullOrEmpty(request.GoogleToken))
+        //         return BadRequest(new AuthResponse { Success = false, Message = "Google token is required." });
 
-            var response = await _authService.LoginWithGoogleAsync(request);
-            if (!response.Success)
-                return BadRequest(response);
+        //     var response = await _authService.LoginWithGoogleAsync(request);
+        //     if (!response.Success)
+        //         return BadRequest(response);
 
-            return Ok(response);
-        }
+        //     return Ok(response);
+        // }
 
         // Google OAuth2 Endpoints
-        [HttpGet("google/signin")]
+        [HttpGet("google/signup")]
+        [SwaggerOperation(Summary = "Đăng ký tài khoản mới bằng Google")]
         public IActionResult InitiateGoogleSignUp()
         {
             try
@@ -77,7 +84,8 @@ namespace SRPM.API.Controllers
             }
         }
 
-        [HttpGet("google/signup")]
+        [HttpGet("google/signin")]
+        [SwaggerOperation(Summary = "Đăng nhập bằng Google")]
         public IActionResult InitiateGoogleSignIn()
         {
             try
@@ -92,6 +100,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("google/signup/callback")]
+        [SwaggerOperation(Summary = "Callback sau khi đăng ký tài khoản bằng Google")]
         public async Task<ActionResult<AuthResponse>> HandleGoogleSignUpCallback([FromQuery] string code, [FromQuery] string state)
         {
             // Lấy frontend URL một lần duy nhất
@@ -125,6 +134,7 @@ namespace SRPM.API.Controllers
         }
 
         [HttpGet("google/signin/callback")]
+        [SwaggerOperation(Summary = "Callback sau khi đăng nhập bằng Google")]
         public async Task<IActionResult> HandleGoogleSignInCallback([FromQuery] string code, [FromQuery] string state)
         {
             // Lấy frontend URL một lần duy nhất

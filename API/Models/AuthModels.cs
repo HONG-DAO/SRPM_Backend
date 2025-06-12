@@ -1,3 +1,4 @@
+// Models/AuthModels.cs
 namespace SRPM.API.Models
 {
     public class UserDto

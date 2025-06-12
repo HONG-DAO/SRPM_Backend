@@ -13,24 +13,44 @@ builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(8080); // lắng nghe tất cả IP trên port 8080
 });
+
 // Add services
 builder.Services.AddLogging();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IAuthService, AuthService>();
+// builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+builder.Services.AddScoped<IEvaluationService, EvaluationService>();
+builder.Services.AddScoped<IEvaluationRepository, EvaluationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IResearchTopicService, ResearchTopicService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFundingRequestService, FundingRequestService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add HttpClient for Google API calls
 builder.Services.AddHttpClient<IGoogleAuthService, GoogleAuthService>();
 
+// Configure CORS - Allow all origins for debugging
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+
 // Cấu hình Swagger với base path "api/v1"
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SRPM API", Version = "v1" });
-
+    c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme",
@@ -78,26 +98,29 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
     options.AddPolicy("RequireStaffRole", policy => policy.RequireRole("Staff"));
-    options.AddPolicy("RequirePIRole", policy => policy.RequireRole("PrincipalInvestigator"));
+options.AddPolicy("RequirePIRole", policy => policy.RequireRole("PrincipalInvestigator"));
     options.AddPolicy("RequireResearcherRole", policy => policy.RequireRole("Researcher"));
     options.AddPolicy("RequireHostInstitutionRole", policy => policy.RequireRole("HostInstitution"));
     options.AddPolicy("RequireAppraisalCouncilRole", policy => policy.RequireRole("AppraisalCouncil"));
 });
 
-// Register repositories and services (giữ nguyên)
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("http://localhost:8081") // Địa chỉ FE của bạn
-                                .AllowAnyHeader()
-                                .AllowAnyMethod();
-                      });
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:8081")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
 
-var app = builder.Build();
+var app = builder.Build(); // ✅ Khởi tạo app trước khi dùng
+
+app.UseCors("AllowFrontend"); // ✅ Bây giờ 'app' đã tồn tại
+
+// IMPORTANT: CORS must be one of the first middlewares
+app.UseCors(MyAllowSpecificOrigins);
 
 // Swagger bật với base path /api/v1
 app.UseSwagger();
@@ -107,8 +130,7 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "api/v1"; // Khi truy cập http://domain:8080/api/v1 sẽ ra swagger UI
 });
 
-app.UseCors(MyAllowSpecificOrigins);
-
+// Authentication and Authorization AFTER CORS
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -121,5 +143,5 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 }
 
-// Chạy server ở tất cả IP trên port 
+// Chạy server ở tất cả IP trên port 8080
 app.Run();
