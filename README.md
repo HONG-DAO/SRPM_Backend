@@ -50,7 +50,7 @@ SRPM_copy/
 
 1. **Clone the repository**
    ```bash
-   git clone <[repository-url](https://github.com/HONG-DAO/SRPM_Backend)>
+   git clone https://github.com/HONG-DAO/SRPM_Backend
    cd SRPM_Backend
    ```
 
